@@ -29,7 +29,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
@@ -60,16 +60,16 @@
     grid-template-columns: 1fr auto;
     align-items: end;
     gap: 24px;
-    margin-bottom: 80px;
-    padding-bottom: 48px;
-    border-bottom: 1px solid var(--border2);
+    margin-bottom: 48px;
+    padding-bottom: 0;
+    border-bottom: none;
     animation: fadeUp 0.6s ease both;
   }
 
   .header-left {}
 
   .eyebrow {
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', monospace;
     font-size: 11px;
     letter-spacing: 0.14em;
     color: var(--muted);
@@ -111,7 +111,7 @@
   }
 
   .date-badge {
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', monospace;
     font-size: 12px;
     color: var(--muted);
     background: var(--surface2);
@@ -207,6 +207,73 @@
     background: var(--border2);
   }
 
+  /* ── METRICS ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 72px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    padding: 36px 32px;
+    display: flex;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .metric-card:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .metric-card:hover .card-glow {
+    opacity: 0.22;
+    filter: blur(55px);
+  }
+
+  .metric-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    flex-shrink: 0;
+    letter-spacing: -0.04em;
+  }
+
+  .metric-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .metric-list {
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    padding-left: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .metric-list li {
+    font-family: 'DM Sans', monospace;
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .metric-list li::marker {
+    color: var(--muted);
+  }
+
   /* ── HIGHLIGHT CARDS ── */
   .cards {
     display: grid;
@@ -254,7 +321,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', monospace;
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -277,7 +344,7 @@
 
   .card-title {
     font-family: 'Syne', sans-serif;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--text);
     line-height: 1.2;
@@ -285,7 +352,7 @@
   }
 
   .card-body {
-    font-size: 14px;
+    font-size: 17px;
     color: var(--muted2);
     line-height: 1.7;
     font-weight: 300;
@@ -296,7 +363,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', monospace;
     font-size: 11px;
     color: var(--muted);
     padding-top: 16px;
@@ -347,7 +414,7 @@
   }
 
   .team-index {
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', monospace;
     font-size: 11px;
     color: var(--muted);
     min-width: 20px;
@@ -434,7 +501,7 @@
   }
 
   .footer-note {
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', monospace;
     font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.06em;
@@ -524,87 +591,71 @@
   <!-- HEADER -->
   <header class="header">
     <div class="header-left">
-      <p class="eyebrow">SLT Design Update · April 2026</p>
+      <p class="eyebrow">SLT Design Update · May 2026</p>
       <h1 class="main-title"><span style="color: #6E6C66;">AI-Assisted</span><br><span style="color: #F0EEE8;">Design & Prototyping</span></h1>
       <p class="header-desc">A snapshot of adoption, wins, and the path to scaling across product, design, and research.</p>
     </div>
 
   </header>
 
-  <!-- STAT STRIP -->
-  <div class="stat-strip">
-    <div class="stat">
-      <div class="stat-accent" style="background: var(--teal);"></div>
-      <div class="stat-glow" style="background: var(--teal);"></div>
-      <div class="stat-num" style="color: var(--teal);">4</div>
-      <div class="stat-label">Product feature<br>teams adopted</div>
-    </div>
-    <div class="stat">
-      <div class="stat-accent" style="background: var(--amber);"></div>
-      <div class="stat-glow" style="background: var(--amber);"></div>
-      <div class="stat-num" style="color: var(--amber);">1</div>
-      <div class="stat-label">POD converted prototype<br>to production code</div>
-    </div>
-    <div class="stat">
-      <div class="stat-accent" style="background: var(--purple);"></div>
-      <div class="stat-glow" style="background: var(--purple);"></div>
-      <div class="stat-num" style="color: var(--purple);">1</div>
-      <div class="stat-label">Internal research<br>tool built</div>
-    </div>
-    <div class="stat">
-      <div class="stat-accent" style="background: var(--red);"></div>
-      <div class="stat-glow" style="background: var(--red);"></div>
-      <div class="stat-num" style="color: var(--red);">1</div>
-      <div class="stat-label">Security review<br>underway</div>
-    </div>
 
-  </div>
 
-  <!-- HIGHLIGHTS -->
-  <div class="section-head"><h2>Highlights</h2></div>
-  <div class="cards">
+  <!-- METRICS -->
+  <div class="section-head"><h2>What we want to measure</h2></div>
+  <div class="metrics-grid">
 
-    <div class="card">
+    <div class="metric-card">
       <div class="card-glow" style="background: var(--teal);"></div>
-      <span class="card-badge badge-green"><span class="badge-dot"></span>Adoption</span>
-      <div class="card-title">Team Adoption</div>
-      <div class="card-body">Four product feature teams are now fully using AI-assisted prototyping as their primary design method — leveraging it into day-to-day workflows across discovery, iteration, and handoff.</div>
-      <div class="card-detail">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        4 feature teams · Active
+      <div class="metric-num" style="color: var(--teal);">01</div>
+      <div class="metric-content">
+        <div class="card-title">Are we improving consistency?</div>
+        <div class="card-body">Is there more consistency between what is designed and what makes it to production?</div>
+        <ul class="metric-list">
+          <li>How often the shipped UI differs meaningfully from the approved design</li>
+          <li>Does the handover include everything dev needs, rated by the receiving team</li>
+          <li>How many design changes are requested within 2 weeks of launch</li>
+        </ul>
       </div>
     </div>
 
-    <div class="card">
+    <div class="metric-card">
       <div class="card-glow" style="background: var(--amber);"></div>
-      <span class="card-badge badge-amber"><span class="badge-dot"></span>Shipped</span>
-      <div class="card-title">Prototype → Production</div>
-      <div class="card-body">One UI POD successfully converted an AI-assisted prototype directly into the Nexus production project — validating the full end-to-end workflow for the first time.</div>
-      <div class="card-detail">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        UI POD · Nexus project
+      <div class="metric-num" style="color: var(--amber);">02</div>
+      <div class="metric-content">
+        <div class="card-title">Are we moving faster?</div>
+        <div class="card-body">Is this AI driven process actually helping teams move quicker?</div>
+        <ul class="metric-list">
+          <li>Time from kickoff to first prototype</li>
+          <li>Time from kickoff to first ship</li>
+          <li>Prototype-to-handover time</li>
+        </ul>
       </div>
     </div>
 
-    <div class="card">
+    <div class="metric-card">
       <div class="card-glow" style="background: var(--purple);"></div>
-      <span class="card-badge badge-purple"><span class="badge-dot"></span>Built in-house</span>
-      <div class="card-title">Research Hub</div>
-      <div class="card-body">A researcher independently built her own research hub — covering intake, repository, analysis, and findings — with no dev support. A signal of what's possible at team level.</div>
-      <div class="card-detail">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M6 4v2l1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Research team · Experimenting
+      <div class="metric-num" style="color: var(--purple);">03</div>
+      <div class="metric-content">
+        <div class="card-title">Do teams feel confident in the process?</div>        <div class="card-body">We want to hear directly from the teams on what's working and what could be better.</div>
+        <ul class="metric-list">
+          <li>How confident do teams feel using the prototypes in their workflow</li>
+          <li>How has this changed the way Designers and Engineers work together</li>
+          <li>Does everyone involved have what they need</li>
+        </ul>
       </div>
     </div>
 
-    <div class="card">
+    <div class="metric-card">
       <div class="card-glow" style="background: var(--red);"></div>
-      <span class="card-badge badge-red"><span class="badge-dot"></span>Security Review</span>
-      <div class="card-title">External Testing Path</div>
-      <div class="card-body">Actively working with security to establish safe public visibility for GitHub Pages — unlocking the ability to use AI prototypes for external user testing sessions.</div>
-      <div class="card-detail">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Security review · GitHub Pages
+      <div class="metric-num" style="color: var(--red);">04</div>
+      <div class="metric-content">
+        <div class="card-title">Can this scale beyond a few teams?</div>
+        <div class="card-body">We're starting with a small group, but the goal is for this to work across the org without needing hand-holding at every step.</div>
+        <ul class="metric-list">
+          <li>How quickly can a new team get up and running independently</li>
+          <li>Are teams reusing shared patterns and components or starting from scratch each time</li>
+          <li>How much support does each new team need to ship their first prototype</li>
+        </ul>
       </div>
     </div>
 
@@ -655,7 +706,7 @@
         <span class="team-index">05</span>
         <span class="team-dot" style="background: var(--amber);"></span>
         <div>
-          <div class="team-name">UI POD</div>
+          <div class="team-name">UI Team</div>
           <div class="team-type">Design → Nexus</div>
         </div>
       </div>
@@ -681,40 +732,6 @@
   </div>
 
   <!-- NEXT STEPS -->
-  <div class="next-section">
-    <div class="section-head"><h2>What's next</h2></div>
-    <div class="next-row">
-      <div class="next-item">
-        <div class="next-num">1</div>
-        <div class="next-text">
-          <h3>Scale the prototype-to-production pattern</h3>
-          <p>The UI POD proved the workflow is viable. The focus now is documenting the pattern and expanding it to more feature teams.</p>
-        </div>
-      </div>
-      <div class="next-item">
-        <div class="next-num">2</div>
-        <div class="next-text">
-          <h3>Unblock external testing</h3>
-          <p>Finalise the security review for public GitHub Pages so prototypes can be used in real external user testing sessions — a major unlock for the research workflow.</p>
-        </div>
-      </div>
-      <div class="next-item">
-        <div class="next-num">3</div>
-        <div class="next-text">
-          <h3>Define metrics baseline</h3>
-          <p>Establish the metrics we want to track going forward: time-to-prototype, handoff quality, and team confidence scores.</p>
-        </div>
-      </div>
-      <div class="next-item">
-        <div class="next-num">4</div>
-        <div class="next-text">
-          <h3>Promote builder culture</h3>
-          <p>The research hub shows value beyond product teams. Identify two or three more disciplines where AI prototyping could enhance workflows.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
 
 </div>
