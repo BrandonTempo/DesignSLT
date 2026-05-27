@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prototyping Evolution — SLT Update</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --violet: #9664fe;
+      --violet-mid: #c0a2fe;
+      --violet-dim: rgba(150, 100, 254, 0.12);
+      --mint: #0ab78c;
+      --mint-dim: rgba(10, 183, 140, 0.12);
+      --vermillion: #f54d42;
+      --vermillion-dim: rgba(245, 77, 66, 0.12);
+      --amber: #ffcc26;
+      --amber-dim: rgba(255, 204, 38, 0.12);
+      --white: #ffffff;
+      --surface: rgba(20, 10, 40, 0.6);
+      --surface-hover: rgba(25, 12, 50, 0.75);
+      --border: rgba(255,255,255,0.08);
+      --font-sans: 'Messina Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --font-serif: 'Lora', 'Messina Serif', ui-serif, Georgia, Cambria, serif;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      font-size: 18px;
+    }
+
+    #bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 65% 15%, #3b1d6e 0%, #1e1040 35%, #0f1828 65%, #080912 100%);
+    }
+
+    #bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.055) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 3.5rem 3.5rem;
+    }
+
+    #bg-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 35%, rgba(5,4,14,0.65) 100%);
+    }
+
+    #content {
+      position: relative;
+      z-index: 10;
+    }
+
+    .container {
+      max-width: 880px;
+      margin-inline: auto;
+      padding-inline: 2rem;
+    }
+
+    section {
+      padding-block: 3rem;
+    }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--violet-mid);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0.85;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--violet-mid);
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h1 {
+      font-size: clamp(2.25rem, 4vw, 3.5rem);
+      font-family: 'DM Sans', var(--font-sans);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      line-height: 1.18;
+      margin-bottom: 0.75rem;
+    }
+
+    .lead {
+      font-size: 1.125rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .sub {
+      font-size: 1.125rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-block: 6rem;
+    }
+
+    /* ── STAT ROW ── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+
+    .stat-cell {
+      background: rgba(18, 8, 38, 0.65);
+      backdrop-filter: blur(12px);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: background 0.2s var(--ease);
+    }
+
+    .stat-cell:hover { background: rgba(25, 12, 50, 0.8); }
+
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 2.75rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+    }
+
+    /* ── COMPARISON GRID ── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 580px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr; }
+    }
+
+    .comp-col {
+      padding: 1.75rem;
+    }
+
+    .comp-col + .comp-col {
+      border-left: 1px solid var(--border);
+    }
+
+    .comp-col.then { background: rgba(245, 77, 66, 0.15); backdrop-filter: blur(12px); }
+    .comp-col.now  { background: rgba(10, 183, 140, 0.15); backdrop-filter: blur(12px); }
+
+    .comp-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .comp-label.then { color: var(--vermillion); }
+    .comp-label.now  { color: var(--mint); }
+
+    .comp-scenario {
+      font-size: 1.125rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.6;
+      padding: 0.875rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      border-left: 2px solid;
+    }
+
+    .comp-col.now .comp-scenario  { border-color: var(--mint); background: rgba(10, 183, 140, 0.18); }
+    .comp-col.then .comp-scenario { border-color: var(--vermillion); background: rgba(245, 77, 66, 0.18); }
+
+    .comp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .comp-list li {
+      font-size: 1.125rem;
+      color: rgba(255,255,255,0.75);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      line-height: 1.55;
+    }
+
+    .comp-icon {
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .comp-icon.now  { color: var(--mint); }
+    .comp-icon.then { color: var(--vermillion); }
+
+    /* ── PRINCIPLE ROWS ── */
+    .principle-list {
+      border: 1px solid rgba(150, 100, 254, 0.25);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .principle-list::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(150, 100, 254, 0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 50%, rgba(10, 183, 140, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .principle-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(40, 18, 80, 0.9) 0%, rgba(20, 10, 50, 0.95) 100%);
+      backdrop-filter: blur(16px);
+      padding: 1.5rem 1.75rem;
+      transition: background 0.2s var(--ease);
+      position: relative;
+      z-index: 1;
+    }
+
+    .principle-row + .principle-row {
+      border-top: 1px solid rgba(150, 100, 254, 0.15);
+    }
+
+    .principle-row:hover { background: linear-gradient(135deg, rgba(50, 24, 96, 0.95) 0%, rgba(28, 14, 62, 0.98) 100%); }
+
+    .principle-name {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .principle-desc {
+      font-size: 1.125rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+    }
+
+    .status-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .status-tag.live {
+      background: rgba(10, 183, 140, 0.12);
+      color: var(--mint);
+      border: 1px solid rgba(10, 183, 140, 0.25);
+    }
+
+    .status-tag.progress {
+      background: rgba(255, 204, 38, 0.1);
+      color: var(--amber);
+      border: 1px solid rgba(255, 204, 38, 0.25);
+    }
+
+    .status-tag.next {
+      background: rgba(150, 100, 254, 0.1);
+      color: var(--violet-mid);
+      border: 1px solid rgba(150, 100, 254, 0.2);
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .timeline-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .timeline-num {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: rgba(150, 100, 254, 0.15);
+      border: 1px solid rgba(150, 100, 254, 0.35);
+      color: var(--violet-mid);
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .timeline-line {
+      width: 1px;
+      flex: 1;
+      background: rgba(150, 100, 254, 0.2);
+      margin-block: 0.5rem;
+      min-height: 2.5rem;
+    }
+
+    .timeline-content {
+      padding-bottom: 3rem;
+    }
+
+    .timeline-item:last-child .timeline-content {
+      padding-bottom: 0;
+    }
+
+    .timeline-title {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 0.5rem;
+      padding-top: 0.35rem;
+    }
+
+    .timeline-desc {
+      font-size: 1.125rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: rgba(18, 8, 45, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(150, 100, 254, 0.2);
+      border-radius: 10px;
+      padding: 1.375rem 1.625rem;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.75;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      margin-top: 1.25rem;
+    }
+
+    .callout-icon { flex-shrink: 0; font-size: 1.5rem; }
+    .callout strong { color: rgba(255,255,255,0.95); }
+
+    /* ── QUOTE BLOCK ── */
+    .quote-block {
+      border-left: 2px solid rgba(150, 100, 254, 0.4);
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .quote-text {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.125rem;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .quote-attr {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border) 30%, var(--border) 70%, transparent);
+      margin-block: 0;
+    }
+
+    /* ── CLOSING ── */
+    section.closing {
+      padding-block: 6rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.08s; }
+    .d2 { transition-delay: 0.16s; }
+    .d3 { transition-delay: 0.24s; }
+    .d4 { transition-delay: 0.32s; }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8, 6, 18, 0.45);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    header .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    header span {
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
+    }
+
+    .header-date {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 640px) {
+      .container { padding-inline: 1.25rem; }
+      section { padding-block: 2.5rem; }
+      .hero { min-height: auto; padding-block: 4rem 3rem; }
+      section.closing { padding-block: 4rem; }
+      .principle-row { grid-template-columns: 1fr; gap: 0.75rem; }
+    }
+    /* ── PROTOTYPE PLAYGROUND CTA ── */
+    .pp-section {
+      padding-block: 2rem 5rem;
+    }
+
+    .pp-inner {
+      background: linear-gradient(135deg, rgba(40, 18, 80, 0.9) 0%, rgba(20, 10, 50, 0.95) 100%);
+      border: 1px solid rgba(150, 100, 254, 0.25);
+      border-radius: 16px;
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pp-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(150, 100, 254, 0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 50%, rgba(10, 183, 140, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+
+
+    .pp-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      position: relative;
+    }
+
+    .pp-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .pp-name {
+      font-family: 'DM Sans', var(--font-sans);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .pp-btn {
+      position: relative;
+      display: inline-block;
+      padding: 0.875rem 2rem;
+      background: var(--violet);
+      color: #fff;
+      font-family: 'DM Sans', var(--font-sans);
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pp-btn:hover {
+      background: #a87ffe;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 580px) {
+      .pp-inner { flex-direction: column; align-items: flex-start; padding: 2rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="bg"></div>
+  <div id="bg-grid"></div>
+  <div id="bg-vignette"></div>
+
+  <div id="content">
+
+    <header>
+      <div class="header-left">
+        <span>SLT Update | <span style="color: var(--violet-mid);">Design & Prototyping</span></span>
+      </div>
+      <span class="header-date">May 2026</span>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <h1 class="fade-up">From drawing pixels in Figma to prompting in Claude</h1>
+        <p class="lead fade-up d2">Two months ago, our prototyping workflow was manual, slow, and disconnected from engineering. Today, AI is changing every step — from the first idea to a working interface.</p>
+
+        <div class="comparison-grid fade-up d2">
+          <div class="comp-col then">
+            <div class="comp-label then">↩ Two months ago</div>
+            <div class="comp-scenario">"Hey Designer, can you mock up a few directions I can review by the end of the week?"</div>
+            <ul class="comp-list">
+              <li><span class="comp-icon then">✕</span> Open Figma, build frames from scratch or find a template to adapt</li>
+              <li><span class="comp-icon then">✕</span> Manually place every component, set every spacing value</li>
+              <li><span class="comp-icon then">✕</span> Share a static link — stakeholders see pixels, not behaviour</li>
+              <li><span class="comp-icon then">✕</span> Iterate by redrawing; each round takes hours</li>
+              <li><span class="comp-icon then">✕</span> Hand off a spec doc; engineer re-interprets the design</li>
+            </ul>
+          </div>
+          <div class="comp-col now">
+            <div class="comp-label now">→ Today</div>
+            <div class="comp-scenario">"Hey team, let's get together and visualize a few directions on a call today"</div>
+            <ul class="comp-list">
+              <li><span class="comp-icon now">✓</span> Prompt Claude Code with the brief, utilizing design system</li>
+              <li><span class="comp-icon now">✓</span> Get a working, interactive code prototype in minutes</li>
+              <li><span class="comp-icon now">✓</span> Share a live URL — stakeholders click through real interactions</li>
+              <li><span class="comp-icon now">✓</span> Iterate by prompting; rounds take minutes, not hours</li>
+              <li><span class="comp-icon now">✓</span> The prototype is a real artefact — testable, iterable, and engineer-readable</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WHAT'S CHANGED IN PRACTICE -->
+    <section>
+      <div class="container">
+        <h1 class="fade-up d1" style="margin-bottom: 0.5rem;">Three significant changes</h1>
+        <p class="sub fade-up d2">The nature of our work has fundamentally shifted</p>
+
+        <div class="principle-list fade-up d2">
+          <div class="principle-row">
+            <div>
+              <div class="principle-name">Design is interactive from day one</div>
+              <div class="principle-desc">Instead of creating static images from written requirements teams are creating interactive prototypes, together, in real time.</div>
+            </div>
+            <span class="status-tag live">Proven</span>
+          </div>
+          <div class="principle-row">
+            <div>
+              <div class="principle-name">Design and engineering are converging</div>
+              <div class="principle-desc">Prototypes are now real, working code — which means the gap between "designed" and "built" is narrowing fast.</div>
+            </div>
+            <span class="status-tag live">Proven</span>
+          </div>
+          <div class="principle-row">
+            <div>
+              <div class="principle-name">Our roles are evolving</div>
+              <div class="principle-desc">Designers and Product managers are writing and prompting real code — not as a novelty, but as a core part of how they work.</div>
+            </div>
+            <span class="status-tag progress">Expanding</span>
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+
+    <!-- WHAT'S NEXT -->
+    <section class="closing">
+      <div class="container">
+        <h1 class="fade-up d1">What we're doing to scale this process</h1>
+        <p class="sub fade-up d2">The foundation is there, now we need to turn patterns into practice.</p>
+
+        <div class="timeline fade-up d2">
+          <div class="timeline-item">
+            <div class="timeline-marker">
+              <div class="timeline-num">1</div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Secure the prototype</div>
+              <div class="timeline-desc">Establish clear guidelines for what can be shared externally, how prototypes are hosted, and ensuring sensitive data never surfaces in a testing environment.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker">
+              <div class="timeline-num">2</div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Document the prototype-to-production process</div>
+              <div class="timeline-desc">Codify the handoff checklist, quality standards, and expectations for when a prototype is production-ready versus still exploratory — so any team can replicate it.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker">
+              <div class="timeline-num">3</div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Establish metrics baselines</div>
+              <div class="timeline-desc">Define what we're tracking and set a baseline: time from brief to prototype, handoff quality, and team confidence. Without it, we can't demonstrate value over time.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker">
+              <div class="timeline-num">4</div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-title">Enable more teams to work this way</div>
+              <div class="timeline-desc">Scale the practice beyond the early adopters. Share what's working, reduce the barrier to entry, and give more teams the tools and confidence to prototype with AI as a default — not an exception.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- PROTOTYPE PLAYGROUND CTA -->
+    <section class="pp-section">
+      <div class="container">
+        <div class="pp-inner">
+          <div class="pp-logo-row">
+            <img src="data:image/png;base64,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" alt="Prototype Playground logo" class="pp-logo" />
+            <span class="pp-name">Prototype Playground</span>
+          </div>
+          <a href="https://tempo-io.github.io/prototype-playground/" target="_blank" rel="noopener" class="pp-btn">See it in action</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>
